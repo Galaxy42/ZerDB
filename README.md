@@ -57,6 +57,7 @@ $zerdb->tablas = array( // tabla de usuarios
          "usuario", "clave" // columnas de la tabla usuarios
     ) // si añades una coma ( , ) y añades otro array será otra tabla.
 );
+```
 
 Y así formando un array multidimensional con todas las tablas y columnas. `$zerdb->tablas[ 'tabla' ] = array("columna1", "columna2")`si se te hace más fácil de entender.
 
