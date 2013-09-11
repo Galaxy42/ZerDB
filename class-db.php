@@ -231,7 +231,7 @@ class zerdb {
 	* @param $accion string
 	* 
 	**/
-	function _insertar_y_reemplazar($tabla = null, $datos = false, $accion = null) {
+	function _insertar_y_reemplazar($tabla = null, $datos = false, $add = '', $accion = null) {
 
 		if( !in_array( strtoupper($accion), array("INSERT", "REPLACE") ) or !is_array($datos) || is_null($tabla) ) {
 			return false;
@@ -244,9 +244,11 @@ class zerdb {
 		$tablas = $this->tablas[ $tabla ];
 
 		$acc = strtoupper($accion);
-
 		$query = "{$acc} INTO {$tabla} (" . implode(', ', $tablas) . ") VALUES ('" . implode("','", $datos) . 
 			"')";
+		
+		if( !empty($add) )
+			$query .= " " . $add;
 
 		return $this->query($query);
 
@@ -260,8 +262,8 @@ class zerdb {
 	* @access public
 	*
 	**/
-	function insertar($tabla, $datos) {
-		return $this->_insertar_y_reemplazar($tabla, $datos, "INSERT");
+	function insertar($tabla, $datos, $add = '') {
+		return $this->_insertar_y_reemplazar($tabla, $datos, $add, "INSERT");
 	}
 	/**
 	*
@@ -287,8 +289,8 @@ class zerdb {
 	* @access public
 	*
 	**/
-	function reemplazar($tabla, $datos) {
-		return $this->_insertar_y_reemplazar($tabla, $datos, "REPLACE");
+	function reemplazar($tabla, $datos, $add = '') {
+		return $this->_insertar_y_reemplazar($tabla, $datos, $add, "REPLACE");
 	}
 	/**
 	*
@@ -301,7 +303,7 @@ class zerdb {
 	* 
 	*
 	**/
-	function actualizar($tabla = null, $datos = false, $donde = false ) {
+	function actualizar($tabla = null, $datos = false, $donde = false, $add = '' ) {
 		if( !is_array($datos) || is_null($tabla) ) 
 			return false;
 
@@ -324,6 +326,9 @@ class zerdb {
 			$query .= " WHERE " . implode(" AND ", $where);
 		}
 
+		if( ! empty($add) )
+			$query .= " " . $add;
+
 		return $this->query($query);
 
 
@@ -338,7 +343,7 @@ class zerdb {
 	* @param $donde array
 	*
 	**/
-	function eliminar($tabla = null, $donde = null) {
+	function eliminar($tabla = null, $donde = null, $add = '') {
 		if( is_null($tabla) )
 			return false;
 		if( ! in_array($tabla, $this->tablas) ) {
@@ -351,9 +356,11 @@ class zerdb {
 		if( isset($donde) && is_array($donde) ) {
 			foreach($donde as $a => $b)
 				$where[] = "$a = '$b'";
-
 			$query .= " WHERE " . implode(" AND ", $where);
 		}
+
+		if( !empty($add) )
+			$query .= ' ' . $add;
 
 		$this->query($query);
 	}
